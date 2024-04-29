@@ -15,17 +15,17 @@ class Bullet(private val context: Context)
         bullet = BitmapFactory.decodeResource(context.resources, R.drawable.ic_launcher_foreground)
     }
 
-    fun getShot(): Bitmap
+    fun getBullet(): Bitmap
     {
         return bullet
     }
 
-    fun getShotWidth(): Int
+    fun getBulletWidth(): Int
     {
         return bullet.width
     }
 
-    fun getShotHeight(): Int
+    fun getBulletHeight(): Int
     {
         return bullet.height
     }
