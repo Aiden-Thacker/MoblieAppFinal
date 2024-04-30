@@ -8,14 +8,14 @@ import java.util.Random
 class EnemyShip(private val context: Context)
 {
     private val enemySpaceship: Bitmap
-    private var enemyX: Int = 0
-    private var enemyY: Int = 0
-    private var enemyVelocity: Int = 0
+    var enemyX: Int = 0
+    var enemyY: Int = 0
+    var enemyVelocity: Int = 0
     private val random: Random
 
     init
     {
-        enemySpaceship = BitmapFactory.decodeResource(context.resources, R.drawable.ic_launcher_foreground)
+        enemySpaceship = BitmapFactory.decodeResource(context.resources, R.drawable.shipsidesfive)
         random = Random()
         enemyX = 200 + random.nextInt(400)
         enemyY = 0
