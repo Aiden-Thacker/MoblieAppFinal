@@ -44,20 +44,20 @@ class Level(context: Context) : View(context)
     @SuppressLint("DrawAllocation")
     override fun onDraw(canvas: Canvas)
     {
-        enemySpaceship.enemyX += enemySpaceship.enemyVelocity
+        enemySpaceship.x += enemySpaceship.enemyVelocity
         // If enemySpaceship collides with right wall, reverse enemies velocity
-        if (enemySpaceship.enemyX + enemySpaceship.getEnemySpaceshipWidth() >= screenWidth)
+        if (enemySpaceship.x + enemySpaceship.getEnemySpaceshipWidth() >= screenWidth)
         {
             enemySpaceship.enemyVelocity *= -1
         }
         // If enemySpaceship collides with left wall, reverse enemies velocity
-        if (enemySpaceship.enemyX <= 0)
+        if (enemySpaceship.x <= 0)
         {
             enemySpaceship.enemyVelocity *= -1
         }
 
         // Draw the enemy Spaceship
-        canvas.drawBitmap(enemySpaceship.getEnemySpaceship(), enemySpaceship.enemyX.toFloat(), enemySpaceship.enemyY.toFloat(), null)
+        canvas.drawBitmap(enemySpaceship.getEnemySpaceship(), enemySpaceship.x.toFloat(), enemySpaceship.y.toFloat(), null)
 
         //If not paused make it runnable (like update in unity)
         if (!paused) handler.postDelayed(runnable, UPDATE_MILLIS)

@@ -4,7 +4,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 
-class Bullet(private val context: Context, var bulletX: Int, var bulletY: Int)
+class Bullet(private val context: Context, var x: Int, var y: Int)
 {
     val bullet: Bitmap;
 
