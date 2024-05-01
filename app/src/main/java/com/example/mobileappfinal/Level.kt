@@ -11,6 +11,7 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.Point
 import android.os.Handler
+import android.os.Looper
 import android.view.Display
 import android.view.MotionEvent
 import android.view.View
@@ -19,9 +20,11 @@ import java.util.ArrayList
 import java.util.Random
 class Level(context: Context) : View(context)
 {
+    private val runnable = Runnable { invalidate() }
     private var context: Context = context
     private lateinit var handler: Handler
     private var UPDATE_MILLIS: Long = 30
+    private var paused = false
     private lateinit var enemySpaceship: EnemyShip
     private lateinit var random: Random
     private var screenWidth: Int = 0
@@ -55,5 +58,8 @@ class Level(context: Context) : View(context)
 
         // Draw the enemy Spaceship
         canvas.drawBitmap(enemySpaceship.getEnemySpaceship(), enemySpaceship.enemyX.toFloat(), enemySpaceship.enemyY.toFloat(), null)
+
+        //If not paused make it runnable (like update in unity)
+        if (!paused) handler.postDelayed(runnable, UPDATE_MILLIS)
     }
 }
