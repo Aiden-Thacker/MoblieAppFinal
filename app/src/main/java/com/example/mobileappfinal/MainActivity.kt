@@ -10,9 +10,9 @@ import androidx.appcompat.app.AppCompatActivity
 
 
 class MainActivity : AppCompatActivity() {
-    var screenWidth: Int = 0
-    var screenHeight: Int = 0
-    lateinit var  player: Player
+//    var screenWidth: Int = 0
+//    var screenHeight: Int = 0
+//    lateinit var  player: Player
 
 
 
@@ -21,37 +21,26 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-        player = Player(getApplicationContext())
-
-
-
-
+        setContentView(Level(this))
     }
-    override fun onTouchEvent(event: MotionEvent): Boolean {
-            val touchX = event.x;
-            if (event.action == MotionEvent.ACTION_UP) {
-               println("bruh")
+//    override fun onTouchEvent(event: MotionEvent): Boolean
+//    {
+//        val touchX = event.x;
+//        if (event.action == MotionEvent.ACTION_UP)
+//        {
+//            println("bruh")
+//        }
+//        if (event.action == MotionEvent.ACTION_DOWN)
+//        {
+//            println("fart")
+//        }
+//        if (event.action == MotionEvent.ACTION_MOVE)
+//        {
+//            println("baller")
+//            player.x = touchX.toInt();
+//        }
+//
+//        return true;
+//    }
+}
 
-
-            }
-            if (event.action == MotionEvent.ACTION_DOWN) {
-
-                println("fart")
-            }
-            if (event.action == MotionEvent.ACTION_MOVE) {
-
-                println("baller")
-                player.x = touchX.toInt();
-
-            }
-
-            return true;
-        }
-
-    override fun onDraw(canvas: Canvas){
-
-    }
-
-
-    }
