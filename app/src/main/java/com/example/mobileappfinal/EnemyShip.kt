@@ -15,10 +15,23 @@ class EnemyShip(private val context: Context)
     var enemyVelocity: Int = 0
     private val random: Random
 
+    private val enemyShipImages = intArrayOf(
+        R.drawable.enemyone,
+        R.drawable.enemytwo,
+        R.drawable.enemythree,
+        R.drawable.enemyfour,
+        R.drawable.enemyfive
+    )
+
     //Spawns the ship in
     init {
-        originalEnemySpaceship = BitmapFactory.decodeResource(context.resources, R.drawable.shipsidesfive)
         random = Random()
+        //Randomizes the array of images
+        val randomImageIndex = random.nextInt(enemyShipImages.size)
+        val randomImageResourceId = enemyShipImages[randomImageIndex]
+        originalEnemySpaceship = BitmapFactory.decodeResource(context.resources, randomImageResourceId)
+
+        //Randomizes Spawn Area and Velocity
         x = 200 + random.nextInt(400)
         y = 0
         enemyVelocity = 14 + random.nextInt(10)
