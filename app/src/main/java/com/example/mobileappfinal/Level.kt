@@ -61,7 +61,15 @@ class Level(context: Context) : View(context)
         // Draw the enemy Spaceship
         canvas.drawBitmap(enemySpaceship.getEnemySpaceship(), enemySpaceship.x.toFloat(), enemySpaceship.y.toFloat(), null)
 
+        if(player.x > screenWidth - player.getPlayerWidth()){
+            player.x = screenWidth - player.getPlayerWidth();
+        }else if(player.x < 0){
+            player.x = 0;
+        }
+
         canvas.drawBitmap(player.getPlayer(), player.x.toFloat(), player.y.toFloat(), null)
+
+
 
         //If not paused make it runnable (like update in unity)
         if (!paused) handler.postDelayed(runnable, UPDATE_MILLIS)
@@ -83,12 +91,7 @@ class Level(context: Context) : View(context)
         {
 
             player.x = touchX.toInt()
-            if(touchX > 100){
-               player.x = touchX.toInt() - 280
-            }
-            if(touchX < 1){
-                player.x = 1
-            }
+
         }
 
         return true;
