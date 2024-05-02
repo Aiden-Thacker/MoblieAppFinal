@@ -73,16 +73,22 @@ class Level(context: Context) : View(context)
         val touchX = event.x;
         if (event.action == MotionEvent.ACTION_UP)
         {
-            println("bruh")
+
         }
         if (event.action == MotionEvent.ACTION_DOWN)
         {
-            println("fart")
+
         }
         if (event.action == MotionEvent.ACTION_MOVE)
         {
-            println("baller")
-            player.x = touchX.toInt();
+
+            player.x = touchX.toInt()
+            if(touchX > 100){
+               player.x = touchX.toInt() - 280
+            }
+            if(touchX < 1){
+                player.x = 1
+            }
         }
 
         return true;
