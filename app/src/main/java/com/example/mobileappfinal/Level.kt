@@ -30,6 +30,7 @@ class Level(context: Context) : View(context)
     private lateinit var random: Random
     var screenWidth: Int = 0
     var screenHeight: Int = 0
+    lateinit var background: Bitmap
 
     init {
         val display: Display = (context as Activity).windowManager.defaultDisplay
@@ -41,11 +42,15 @@ class Level(context: Context) : View(context)
         enemySpaceship = EnemyShip(context)
         player = Player(context, screenWidth, screenHeight)
         handler = Handler()
+        background = BitmapFactory.decodeResource(context.resources, R.drawable.backgroundmobliegame)
     }
 
     @SuppressLint("DrawAllocation")
     override fun onDraw(canvas: Canvas)
     {
+        //Draw background for game
+        canvas.drawBitmap(background, 0f, 0f, null)
+
         enemySpaceship.x += enemySpaceship.enemyVelocity
         // If enemySpaceship collides with right wall, reverse enemies velocity
         if (enemySpaceship.x + enemySpaceship.getEnemySpaceshipWidth() >= screenWidth)
@@ -97,3 +102,4 @@ class Level(context: Context) : View(context)
         return true;
     }
 }
+
