@@ -10,7 +10,7 @@ class Bullet(private val context: Context, var x: Int, var y: Int)
 
     init
     {
-        bullet = BitmapFactory.decodeResource(context.resources, R.drawable.ic_launcher_foreground)
+        bullet = BitmapFactory.decodeResource(context.resources, R.drawable.effectpurple)
     }
 
     fun getBulletBitmap(): Bitmap
