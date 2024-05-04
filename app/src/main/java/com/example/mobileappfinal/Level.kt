@@ -18,6 +18,8 @@ import android.view.View
 
 import java.util.ArrayList
 import java.util.Random
+import kotlin.math.sin
+
 class Level(context: Context) : View(context)
 {
     private val runnable = Runnable { invalidate() }
@@ -30,6 +32,8 @@ class Level(context: Context) : View(context)
     private lateinit var random: Random
     var screenWidth: Int = 0
     var screenHeight: Int = 0
+    var frequency: Int = 100
+    var amplitude: Int = 150
     lateinit var background: Bitmap
 
     init {
@@ -51,15 +55,16 @@ class Level(context: Context) : View(context)
         //Draw background for game
         canvas.drawBitmap(background, 0f, 0f, null)
 
+        // Update enemy spaceship position based on sine function
+        enemySpaceship.y = (screenHeight / 4 + sin(enemySpaceship.x.toDouble() / frequency) * amplitude).toInt()
+
         enemySpaceship.x += enemySpaceship.enemyVelocity
         // If enemySpaceship collides with right wall, reverse enemies velocity
-        if (enemySpaceship.x + enemySpaceship.getEnemySpaceshipWidth() >= screenWidth)
-        {
+        if (enemySpaceship.x + enemySpaceship.getEnemySpaceshipWidth() >= screenWidth) {
             enemySpaceship.enemyVelocity *= -1
         }
         // If enemySpaceship collides with left wall, reverse enemies velocity
-        if (enemySpaceship.x <= 0)
-        {
+        if (enemySpaceship.x <= 0) {
             enemySpaceship.enemyVelocity *= -1
         }
 
