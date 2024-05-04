@@ -3,21 +3,14 @@ package com.example.mobileappfinal
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
-import android.content.Intent
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
 import android.graphics.Point
 import android.os.Handler
-import android.os.Looper
 import android.view.Display
 import android.view.MotionEvent
 import android.view.View
-
-import java.util.ArrayList
 import java.util.Random
+
 class Level(context: Context) : View(context)
 {
     private val runnable = Runnable { invalidate() }
@@ -30,6 +23,13 @@ class Level(context: Context) : View(context)
     private lateinit var random: Random
     var screenWidth: Int = 0
     var screenHeight: Int = 0
+    var enemyShotAction = false
+    var playerShotAction = false
+    private val enemyBullet: ArrayList<Bullet> = ArrayList()
+    private val ourBullet: ArrayList<Bullet> = ArrayList()
+
+
+
 
     init {
         val display: Display = (context as Activity).windowManager.defaultDisplay
@@ -41,6 +41,9 @@ class Level(context: Context) : View(context)
         enemySpaceship = EnemyShip(context)
         player = Player(context, screenWidth, screenHeight)
         handler = Handler()
+
+
+
     }
 
     @SuppressLint("DrawAllocation")
@@ -58,6 +61,48 @@ class Level(context: Context) : View(context)
             enemySpaceship.enemyVelocity *= -1
         }
 
+        if (!enemyShotAction && ::enemySpaceship.isInitialized) {
+            when {
+                enemySpaceship.x >= 200 + random.nextInt(400) -> {
+                    val enemyShot = Bullet(context, enemySpaceship.x + enemySpaceship.getEnemySpaceshipWidth() / 2, enemySpaceship.y)
+                    enemyBullet.add(enemyShot)
+                    enemyShotAction = true
+                }
+                enemySpaceship.x >= 400 + random.nextInt(800) -> {
+                    val enemyShot = Bullet(context, enemySpaceship.x + enemySpaceship.getEnemySpaceshipWidth() / 2, enemySpaceship.y)
+                    enemyBullet.add(enemyShot)
+                    enemyShotAction = true
+                }
+                else -> {
+                    val enemyShot = Bullet(context, enemySpaceship.x + enemySpaceship.getEnemySpaceshipWidth() / 2, enemySpaceship.y)
+                    enemyBullet.add(enemyShot)
+                    enemyShotAction = true
+                }
+            }
+        }
+        if (!playerShotAction && ::player.isInitialized) {
+            when {
+                player.x >= 200 + random.nextInt(400) -> {
+                    val playerShot = Bullet(context, player.x + player.getPlayerWidth() / 2, player.y)
+                    ourBullet.add(playerShot)
+                    enemyShotAction = true
+                }
+                enemySpaceship.x >= 400 + random.nextInt(800) -> {
+                    val playerShot = Bullet(context, player.x + player.getPlayerWidth() / 2, player.y)
+                    ourBullet.add(playerShot)
+                    enemyShotAction = true
+                }
+                else -> {
+                    val playerShot = Bullet(context, player.x + player.getPlayerWidth() / 2, player.y)
+                    ourBullet.add(playerShot)
+                    enemyShotAction = true
+                }
+            }
+        }
+
+
+
+
         // Draw the enemy Spaceship
         canvas.drawBitmap(enemySpaceship.getEnemySpaceship(), enemySpaceship.x.toFloat(), enemySpaceship.y.toFloat(), null)
 
@@ -69,7 +114,50 @@ class Level(context: Context) : View(context)
 
         canvas.drawBitmap(player.getPlayer(), player.x.toFloat(), player.y.toFloat(), null)
 
-
+        // Draw the enemy shot downwards our spaceship and if it's being hit, decrement life, remove
+        // the shot object from enemyShots ArrayList and show an explosion.
+        // Else if, it goes away through the bottom edge of the screen also remove
+        // the shot object from enemyShots.
+        // When there is no enemyShots no the screen, change enemyShotAction to false, so that enemy
+        // can shot.
+        val iterator = enemyBullet.iterator()
+        while (iterator.hasNext()) {
+            val bullet = iterator.next()
+            bullet.y += 15
+            canvas.drawBitmap(
+                bullet.getBulletBitmap(),
+                bullet.x.toFloat(),
+                bullet.y.toFloat(),
+                null
+            )
+            if (bullet.x >= player.x && bullet.x <= player.x + player.getPlayerWidth() && bullet.y >= player.y && bullet.y <= screenHeight) {
+                iterator.remove()
+            } else if (bullet.y >= screenHeight) {
+                iterator.remove()
+            }
+        }
+        if (enemyBullet.isEmpty()) {
+            enemyShotAction = false
+        }
+        val iterator2 = ourBullet.iterator()
+        while (iterator2.hasNext()) {
+            val bullet = iterator2.next()
+            bullet.y -= 15
+            canvas.drawBitmap(
+                bullet.getBulletBitmap(),
+                bullet.x.toFloat(),
+                bullet.y.toFloat(),
+                null
+            )
+            if (bullet.x >= enemySpaceship.x && bullet.x <= enemySpaceship.x + enemySpaceship.getEnemySpaceshipWidth() && bullet.y >= enemySpaceship.y && bullet.y <= screenHeight) {
+                iterator2.remove()
+            } else if (bullet.y >= screenHeight) {
+                iterator2.remove()
+            }
+        }
+        if (ourBullet.isEmpty()) {
+            playerShotAction = false
+        }
 
         //If not paused make it runnable (like update in unity)
         if (!paused) handler.postDelayed(runnable, UPDATE_MILLIS)
