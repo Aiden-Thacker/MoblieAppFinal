@@ -203,7 +203,7 @@ class Level(context: Context) : View(context)
         return true;
     }
 
-    //Spawn New Enemy Apon Death
+    //Spawn New Enemy Upon Death
     fun spawnNewEnemy()
     {
         enemySpaceship = EnemyShip(context)
