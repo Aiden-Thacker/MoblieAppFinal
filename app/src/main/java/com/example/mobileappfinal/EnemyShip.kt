@@ -14,6 +14,7 @@ class EnemyShip(private val context: Context)
     var y: Int = 0
     var enemyVelocity: Int = 0
     private val random: Random
+    var enemyLife: Int = 1
 
     private val enemyShipImages = intArrayOf(
         R.drawable.enemyone,
@@ -38,6 +39,7 @@ class EnemyShip(private val context: Context)
         scaleBitmap()
         rotateBitmap()
     }
+
     //Scaling the image on of the AI
     private fun scaleBitmap()
     {

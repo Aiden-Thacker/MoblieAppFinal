@@ -3,6 +3,8 @@ package com.example.mobileappfinal
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.Point
 import android.os.Handler
@@ -10,9 +12,7 @@ import android.view.Display
 import android.view.MotionEvent
 import android.view.View
 import java.util.Random
-
 import java.util.ArrayList
-import java.util.Random
 import kotlin.math.sin
 
 class Level(context: Context) : View(context)
@@ -34,6 +34,8 @@ class Level(context: Context) : View(context)
     var playerShotAction = false
     private val enemyBullet: ArrayList<Bullet> = ArrayList()
     private val ourBullet: ArrayList<Bullet> = ArrayList()
+    private var playerShotDelay: Long = 0
+    private var playerLastShotTime: Long = 0
 
 
 
@@ -62,15 +64,19 @@ class Level(context: Context) : View(context)
 
         enemySpaceship.x += enemySpaceship.enemyVelocity
         // If enemySpaceship collides with right wall, reverse enemies velocity
-        if (enemySpaceship.x + enemySpaceship.getEnemySpaceshipWidth() >= screenWidth) {
+        if (enemySpaceship.x + enemySpaceship.getEnemySpaceshipWidth() >= screenWidth)
+        {
             enemySpaceship.enemyVelocity *= -1
         }
         // If enemySpaceship collides with left wall, reverse enemies velocity
-        if (enemySpaceship.x <= 0) {
+        if (enemySpaceship.x <= 0)
+        {
             enemySpaceship.enemyVelocity *= -1
         }
 
-        if (!enemyShotAction && ::enemySpaceship.isInitialized) {
+        //Enables the ability for the Enemy to shoot at the Player
+        if (!enemyShotAction && ::enemySpaceship.isInitialized)
+        {
             when {
                 enemySpaceship.x >= 200 + random.nextInt(400) -> {
                     val enemyShot = Bullet(context, enemySpaceship.x + enemySpaceship.getEnemySpaceshipWidth() / 2, enemySpaceship.y)
@@ -89,48 +95,37 @@ class Level(context: Context) : View(context)
                 }
             }
         }
-        if (!playerShotAction && ::player.isInitialized) {
-            when {
-                player.x >= 200 + random.nextInt(400) -> {
-                    val playerShot = Bullet(context, player.x + player.getPlayerWidth() / 2, player.y)
-                    ourBullet.add(playerShot)
-                    enemyShotAction = true
-                }
-                enemySpaceship.x >= 400 + random.nextInt(800) -> {
-                    val playerShot = Bullet(context, player.x + player.getPlayerWidth() / 2, player.y)
-                    ourBullet.add(playerShot)
-                    enemyShotAction = true
-                }
-                else -> {
-                    val playerShot = Bullet(context, player.x + player.getPlayerWidth() / 2, player.y)
-                    ourBullet.add(playerShot)
-                    enemyShotAction = true
-                }
-            }
+
+        // Trigger shooting action when the screen is touched
+        val currentTime = System.currentTimeMillis()
+        if (currentTime - playerLastShotTime >= playerShotDelay)
+        {
+            playerLastShotTime = currentTime
+            playerShotDelay = (1000 + random.nextInt(3000)).toLong() // Random delay between 1 to 3 seconds
+            val playerShot = Bullet(context, player.x + player.getPlayerWidth() / 2, player.y)
+            ourBullet.add(playerShot)
+            playerShotAction = true
         }
-
-
-
 
         // Draw the enemy Spaceship
         canvas.drawBitmap(enemySpaceship.getEnemySpaceship(), enemySpaceship.x.toFloat(), enemySpaceship.y.toFloat(), null)
 
-        if(player.x > screenWidth - player.getPlayerWidth()){
+        //Player Borders
+        if(player.x > screenWidth - player.getPlayerWidth())
+        {
             player.x = screenWidth - player.getPlayerWidth();
-        }else if(player.x < 0){
+        }else if(player.x < 0)
+        {
             player.x = 0;
         }
 
+        //Draw Player
         canvas.drawBitmap(player.getPlayer(), player.x.toFloat(), player.y.toFloat(), null)
 
-        // Draw the enemy shot downwards our spaceship and if it's being hit, decrement life, remove
-        // the shot object from enemyShots ArrayList and show an explosion.
-        // Else if, it goes away through the bottom edge of the screen also remove
-        // the shot object from enemyShots.
-        // When there is no enemyShots no the screen, change enemyShotAction to false, so that enemy
-        // can shot.
+        // Draws Enemy's bullets
         val iterator = enemyBullet.iterator()
-        while (iterator.hasNext()) {
+        while (iterator.hasNext())
+        {
             val bullet = iterator.next()
             bullet.y += 15
             canvas.drawBitmap(
@@ -139,17 +134,23 @@ class Level(context: Context) : View(context)
                 bullet.y.toFloat(),
                 null
             )
-            if (bullet.x >= player.x && bullet.x <= player.x + player.getPlayerWidth() && bullet.y >= player.y && bullet.y <= screenHeight) {
+            if (bullet.x >= player.x && bullet.x <= player.x + player.getPlayerWidth() && bullet.y >= player.y && bullet.y <= screenHeight)
+            {
                 iterator.remove()
-            } else if (bullet.y >= screenHeight) {
+            } else if (bullet.y <= 0)
+            {
                 iterator.remove()
             }
         }
-        if (enemyBullet.isEmpty()) {
+        if (enemyBullet.isEmpty())
+        {
             enemyShotAction = false
         }
+
+        //Draw Player's bullets
         val iterator2 = ourBullet.iterator()
-        while (iterator2.hasNext()) {
+        while (iterator2.hasNext())
+        {
             val bullet = iterator2.next()
             bullet.y -= 15
             canvas.drawBitmap(
@@ -158,13 +159,24 @@ class Level(context: Context) : View(context)
                 bullet.y.toFloat(),
                 null
             )
-            if (bullet.x >= enemySpaceship.x && bullet.x <= enemySpaceship.x + enemySpaceship.getEnemySpaceshipWidth() && bullet.y >= enemySpaceship.y && bullet.y <= screenHeight) {
+            if (bullet.x + bullet.getBulletBitmap().width >= enemySpaceship.x &&
+                bullet.x <= enemySpaceship.x + enemySpaceship.getEnemySpaceshipWidth() &&
+                bullet.y + bullet.getBulletBitmap().height >= enemySpaceship.y &&
+                bullet.y <= enemySpaceship.y + enemySpaceship.getEnemySpaceshipHeight())
+            {
                 iterator2.remove()
-            } else if (bullet.y >= screenHeight) {
+                enemySpaceship.enemyLife--;
+                if (enemySpaceship.enemyLife <= 0) {
+                    enemyShotAction = false // Stop enemy shooting
+                    spawnNewEnemy() // Spawn a new enemy
+                }
+            } else if (bullet.y >= screenHeight)
+            {
                 iterator2.remove()
             }
         }
-        if (ourBullet.isEmpty()) {
+        if (ourBullet.isEmpty())
+        {
             playerShotAction = false
         }
 
@@ -176,10 +188,7 @@ class Level(context: Context) : View(context)
     override fun onTouchEvent(event: MotionEvent): Boolean
     {
         val touchX = event.x;
-        if (event.action == MotionEvent.ACTION_UP)
-        {
-
-        }
+        val touchY = event.y;
         if (event.action == MotionEvent.ACTION_DOWN)
         {
 
@@ -192,6 +201,13 @@ class Level(context: Context) : View(context)
         }
 
         return true;
+    }
+
+    //Spawn New Enemy Apon Death
+    fun spawnNewEnemy()
+    {
+        enemySpaceship = EnemyShip(context)
+        enemySpaceship.enemyLife = 1
     }
 }
 
