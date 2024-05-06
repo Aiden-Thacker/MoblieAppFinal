@@ -50,7 +50,7 @@ class Level(context: Context) : View(context)
         enemySpaceship = EnemyShip(context)
         player = Player(context, screenWidth, screenHeight)
         handler = Handler()
-        background = BitmapFactory.decodeResource(context.resources, R.drawable.backgroundmobliegame)
+        background = BitmapFactory.decodeResource(context.resources, R.drawable.gamescreen2)
     }
 
     @SuppressLint("DrawAllocation")
