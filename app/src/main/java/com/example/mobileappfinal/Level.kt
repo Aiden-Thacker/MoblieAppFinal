@@ -3,9 +3,12 @@ package com.example.mobileappfinal
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
 import android.graphics.Point
 import android.os.Handler
 import android.view.Display
@@ -19,7 +22,7 @@ class Level(context: Context) : View(context)
 {
     private val runnable = Runnable { invalidate() }
     private var context: Context = context
-    private lateinit var handler: Handler
+    private var handler: Handler? = null
     private var UPDATE_MILLIS: Long = 30
     private var paused = false
     private lateinit var enemySpaceship: EnemyShip
@@ -36,6 +39,14 @@ class Level(context: Context) : View(context)
     private val ourBullet: ArrayList<Bullet> = ArrayList()
     private var playerShotDelay: Long = 0
     private var playerLastShotTime: Long = 0
+    private lateinit var shipHealth: Bitmap
+    private var points = 0
+    private val textSize = 120
+    private val scorePaint = Paint().apply {
+        color = Color.MAGENTA
+        textSize = 120F
+        textAlign = Paint.Align.LEFT
+    }
 
 
 
@@ -58,6 +69,36 @@ class Level(context: Context) : View(context)
     {
         //Draw background for game
         canvas.drawBitmap(background, 0f, 0f, null)
+        //Draw the players health and points
+        canvas.drawText("Pts: $points", 0f, textSize.toFloat(), scorePaint)
+
+        // Load the health image
+        val originalHealthBitmap = BitmapFactory.decodeResource(context.resources, R.drawable.ship)
+        val scaleFactor = 0.50f // 50% smaller
+
+        // Resize the health image
+        val scaledHealthBitmap = Bitmap.createScaledBitmap(originalHealthBitmap,
+            (originalHealthBitmap.width * scaleFactor).toInt(),
+            (originalHealthBitmap.height * scaleFactor).toInt(), false)
+
+        // Draw the health images
+        for (i in player.life downTo 1)
+        {
+            // Adjust the position where the health images are drawn
+            val healthImageX = screenWidth - (scaledHealthBitmap.width * i) - 20 // Adjust as needed
+            val healthImageY = 20 // Adjust as needed
+            canvas.drawBitmap(scaledHealthBitmap, healthImageX.toFloat(), healthImageY.toFloat(), null)
+        }
+
+        //When the player loses all lives go to game over screen
+        if (player.life == 0) {
+            paused = true
+            handler = null
+//            val intent = Intent(context, GameOver::class.java)
+//            intent.putExtra("points", points)
+//            context.startActivity(intent)
+//            (context as Activity).finish()
+        }
 
         // Update enemy spaceship position based on sine function
         enemySpaceship.y = (screenHeight / 4 + sin(enemySpaceship.x.toDouble() / frequency) * amplitude).toInt()
@@ -96,7 +137,7 @@ class Level(context: Context) : View(context)
             }
         }
 
-        // Trigger shooting action when the screen is touched
+        // Player Shoots at a random-ish Time
         val currentTime = System.currentTimeMillis()
         if (currentTime - playerLastShotTime >= playerShotDelay)
         {
@@ -137,6 +178,7 @@ class Level(context: Context) : View(context)
             if (bullet.x >= player.x && bullet.x <= player.x + player.getPlayerWidth() && bullet.y >= player.y && bullet.y <= screenHeight)
             {
                 iterator.remove()
+                player.life--
             } else if (bullet.y <= 0)
             {
                 iterator.remove()
@@ -159,6 +201,7 @@ class Level(context: Context) : View(context)
                 bullet.y.toFloat(),
                 null
             )
+            //Checks if it Collides with Enemy
             if (bullet.x + bullet.getBulletBitmap().width >= enemySpaceship.x &&
                 bullet.x <= enemySpaceship.x + enemySpaceship.getEnemySpaceshipWidth() &&
                 bullet.y + bullet.getBulletBitmap().height >= enemySpaceship.y &&
@@ -169,6 +212,7 @@ class Level(context: Context) : View(context)
                 if (enemySpaceship.enemyLife <= 0) {
                     enemyShotAction = false // Stop enemy shooting
                     spawnNewEnemy() // Spawn a new enemy
+                    points++
                 }
             } else if (bullet.y >= screenHeight)
             {
@@ -181,7 +225,7 @@ class Level(context: Context) : View(context)
         }
 
         //If not paused make it runnable (like update in unity)
-        if (!paused) handler.postDelayed(runnable, UPDATE_MILLIS)
+        if (!paused) handler?.postDelayed(runnable, UPDATE_MILLIS)
     }
 
     @SuppressLint("ClickableViewAccessibility")
