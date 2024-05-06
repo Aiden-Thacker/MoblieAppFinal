@@ -7,6 +7,17 @@
     android:layout_height="match_parent"
     tools:context=".Gameover">
 
+    <ImageView
+        android:id="@+id/imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:scaleX="10"
+        android:scaleY="10"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/gameover" />
+
     <Button
         android:id="@+id/Retry_button"
         android:layout_width="wrap_content"
@@ -37,8 +48,11 @@
         android:id="@+id/GameOverText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:shadowColor="#C31313"
         android:text="Game Over"
+        android:textColor="#000000"
         android:textSize="34sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/Retry_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.53"
