@@ -23,24 +23,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(Level(this))
     }
-//    override fun onTouchEvent(event: MotionEvent): Boolean
-//    {
-//        val touchX = event.x;
-//        if (event.action == MotionEvent.ACTION_UP)
-//        {
-//            println("bruh")
-//        }
-//        if (event.action == MotionEvent.ACTION_DOWN)
-//        {
-//            println("fart")
-//        }
-//        if (event.action == MotionEvent.ACTION_MOVE)
-//        {
-//            println("baller")
-//            player.x = touchX.toInt();
-//        }
-//
-//        return true;
-//    }
+
+
+
 }
 
