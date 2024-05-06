@@ -17,7 +17,12 @@ class Player(var context: Context,var screenWidth: Int, var screenHeight: Int)
 
     init
     {
-        ourSpaceship = BitmapFactory.decodeResource(context.resources, R.drawable.ship)
+        //Shrinking the player by 25%
+        val originalBitmap = BitmapFactory.decodeResource(context.resources, R.drawable.ship)
+        val scaleFactor = 0.75f
+        ourSpaceship = Bitmap.createScaledBitmap(originalBitmap,
+            (originalBitmap.width * scaleFactor).toInt(),
+            (originalBitmap.height * scaleFactor).toInt(), false)
         random = Random()
         x = random.nextInt(screenWidth)
         y = screenHeight - ourSpaceship.getHeight()
