@@ -94,10 +94,10 @@ class Level(context: Context) : View(context)
         if (player.life == 0) {
             paused = true
             handler = null
-//            val intent = Intent(context, GameOver::class.java)
-//            intent.putExtra("points", points)
-//            context.startActivity(intent)
-//            (context as Activity).finish()
+            val intent = Intent(context, Gameover::class.java)
+            intent.putExtra("points", points)
+            context.startActivity(intent)
+            (context as Activity).finish()
         }
 
         // Update enemy spaceship position based on sine function
