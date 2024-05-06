@@ -10,7 +10,17 @@ class Bullet(private val context: Context, var x: Int, var y: Int)
 
     init
     {
-        bullet = BitmapFactory.decodeResource(context.resources, R.drawable.effectpurple)
+        val originalBitmap = BitmapFactory.decodeResource(context.resources, R.drawable.effectpurple)
+
+        // Calculate the scaled width and height
+        val scaledWidth = originalBitmap.width / 2
+        val scaledHeight = originalBitmap.height / 2
+
+        // Create a scaled version of the bitmap
+        bullet = Bitmap.createScaledBitmap(originalBitmap, scaledWidth, scaledHeight, false)
+
+        // Recycle the original bitmap to free up memory
+        originalBitmap.recycle()
     }
 
     fun getBulletBitmap(): Bitmap
