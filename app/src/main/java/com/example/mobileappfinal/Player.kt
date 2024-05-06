@@ -12,6 +12,7 @@ class Player(var context: Context,var screenWidth: Int, var screenHeight: Int)
     var ourSpaceship: Bitmap
     var x: Int
     var y: Int
+    var life: Int = 3
     var random: Random
 
     init
