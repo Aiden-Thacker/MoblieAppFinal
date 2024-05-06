@@ -1,20 +1,31 @@
 package com.example.mobileappfinal
 
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
+import android.content.Intent
+import android.widget.TextView
 
 class Mainmenu : AppCompatActivity() {
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContentView(R.layout.activity_mainmenu)
-        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
-            val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
-            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom)
-            insets
+
+        val startbutton = findViewById<TextView>(R.id.Start_button)
+        startbutton.text = "Start"
+
+        val Titletext = findViewById<TextView>(R.id.TitleText)
+        Titletext.text = "Pew Pew Bang Bang"
+
+        startbutton.setOnClickListener {
+            goMainActivity()
         }
+    }
+
+
+    fun goMainActivity() {
+        val intent = Intent(this, MainActivity::class.java)
+        startActivity(intent)
     }
 }
