@@ -18,6 +18,7 @@ class Player(var context: Context,var screenWidth: Int, var screenHeight: Int)
     init
     {
         //Shrinking the player by 25%
+        //God I hope this works for Liam
         val originalBitmap = BitmapFactory.decodeResource(context.resources, R.drawable.ship)
         val scaleFactor = 0.75f
         ourSpaceship = Bitmap.createScaledBitmap(originalBitmap,
